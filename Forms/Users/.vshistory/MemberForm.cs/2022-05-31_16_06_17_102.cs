@@ -1,0 +1,188 @@
+﻿using LibraryManegement.General;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace LibraryManegement.Forms
+{
+    public partial class MemberForm : Form
+    {
+
+        public int ID, Users_ID;
+        public string username;
+        AddMemberForm mmb_update = new AddMemberForm();
+        public MemberForm()
+        {
+            InitializeComponent();
+        }
+        /*------------------------------------Buttons----------------------------------------*/
+        //close
+        private void picboxClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        //max_min 
+        private void picboxMax_Click(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Normal)
+            {
+                WindowState = FormWindowState.Maximized;
+
+
+            }
+            else
+            {
+                WindowState = FormWindowState.Normal;
+            }
+        }
+        //Add button
+        private void btnAddMember_Click(object sender, EventArgs e)
+        {
+            //AddMemberForm mmb_add = new AddMemberForm();
+            mmb_update.ADD_OR_UPDATE = 0; // 0 to add 1 to update
+            mmb_update.User_ID = Users_ID;
+            mmb_update.ShowDialog();
+        }
+        //Update butotns
+        private void btnUpdateMember_Click(object sender, EventArgs e)
+        {
+            if (mmb_update.txtboxName.Text != string.Empty)
+            {
+                mmb_update.ADD_OR_UPDATE = 1; // 0 to add 1 to update
+                mmb_update.User_ID = Users_ID;
+                mmb_update.Member_ID = ID;
+                mmb_update.btnAddMember.ButtonText = "Update";
+                mmb_update.lblAdd.Text = "Update Member";
+                mmb_update.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Selecet a cell of the member you want to update \n "," Select Member data",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            }
+        }
+        //Delete button
+        private void btnDeleteMember_Click(object sender, EventArgs e)
+        {
+    /*        if (mmb_update.txtboxName.Text != string.Empty)
+            {
+                DialogResult rslt = MessageBox.Show("Record Will be Deleted Paremntly AReyou sure you want to delete?", "Deleting confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (rslt == DialogResult.Yes)
+                {
+                    try
+                    {   //Delete member
+                        using (SqlConnection con = new SqlConnection(AppConnection.GetConnectionString()))
+                        {
+                            using (SqlCommand cmd = new SqlCommand("DELETE_MEMBER", con))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+
+                                cmd.Parameters.AddWithValue("@ID", ID);
+
+                                if (con.State != ConnectionState.Open)
+                                    con.Open();
+
+                                cmd.ExecuteReader();
+
+                            }
+                        }
+                        //Delete User
+                        using (SqlConnection con = new SqlConnection(AppConnection.GetConnectionString()))
+                        {
+                            using (SqlCommand cmd = new SqlCommand("DELETE_USER", con))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+
+                                cmd.Parameters.AddWithValue("@ID", Users_ID);
+
+                                if (con.State != ConnectionState.Open)
+                                    con.Open();
+
+                                cmd.ExecuteReader();
+
+                            }
+
+                        }
+                        AddedSuccefulyDialog SuccForm = new AddedSuccefulyDialog();
+                        SuccForm.lblTaskCompleted.Text = "Member Deleted";
+                        SuccForm.ShowDialog();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("While Deleting a member an Error catched \n" + ex.Message + "\n" + ex.StackTrace, "Catched an Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Selecet the row or cell of the member you want to Delete \n ", " Deleting failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }*/
+        }
+
+        /*------------------------------------Behind the Scene functions ----------------------------------------*/
+
+        //load data when form is open
+        private void MemberForm_Activated(object sender, EventArgs e)
+        {
+            LoadMemberData();
+        }
+        //Load data to update
+        private void dataGridViewMember_CellClick(object sender, DataGridViewCellEventArgs e)
+        {           
+                if (dataGridViewMember.Rows.Count > 0)
+                {
+                    username = dataGridViewMember.CurrentRow.Cells[3].Value.ToString();
+                    ID = Convert.ToInt32(dataGridViewMember.CurrentRow.Cells[0].Value);
+                    Users_ID = Convert.ToInt32(dataGridViewMember.CurrentRow.Cells[1].Value);
+                    mmb_update.txtboxName.Text = dataGridViewMember.CurrentRow.Cells[2].Value.ToString();
+                    mmb_update.txtboxUsername.Text = dataGridViewMember.CurrentRow.Cells[3].Value.ToString();
+                    mmb_update.txtboxPassword.Text = dataGridViewMember.CurrentRow.Cells[4].Value.ToString();
+                    mmb_update.cmbGender.Text = dataGridViewMember.CurrentRow.Cells[5].Value.ToString();
+                    mmb_update.txtboxAddress.Text = dataGridViewMember.CurrentRow.Cells[6].Value.ToString();
+                    mmb_update.txtboxEmail.Text = dataGridViewMember.CurrentRow.Cells[7].Value.ToString();
+                    mmb_update.checkboxActivation.Checked = Convert.ToBoolean(dataGridViewMember.CurrentRow.Cells[8].Value);
+                }
+        
+        }
+
+        //Load member data to data grid view
+        private void LoadMemberData()
+        {
+            /*       try
+                   {
+
+
+                       using (SqlConnection con = new SqlConnection(AppConnection.GetConnectionString()))
+                       {
+                           using (SqlCommand cmd = new SqlCommand("LOAD_MEMBER_DATA", con))
+                           {
+                               cmd.CommandType = CommandType.StoredProcedure;
+                               if (con.State != ConnectionState.Open)
+                                   con.Open();
+                               DataTable dtRoles = new DataTable();
+
+                               SqlDataReader dr = cmd.ExecuteReader();
+
+                               dtRoles.Load(dr);
+
+                               dataGridViewMember.DataSource = dtRoles;
+                           }
+                       }
+                   }
+                   catch (Exception ex)
+                   {
+                       MessageBox.Show("An error accured while loading Members data \n " + ex.Message, "Error catched", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                   }
+
+       */
+        }
+    }
+}

@@ -4,7 +4,9 @@ This is another version of a previous work where it was developed using Relation
 
 This program is developed for the Advanced database term Project SE308. 
 In this project, we are responsible for the design of a Library Management System LMS connected to the NoSql database (MongoDB).
-Team Member:  [Yousra Alaklouk](https://github.com/YousraAlaklouk), [Sami Haj](https://github.com/SamTheDemon),[Abdulaziz Alhussein](https://github.com/AbdulazizSE).
+
+### Team Member:  
+**[Yousra Alaklouk]**(https://github.com/YousraAlaklouk), **[Sami Haj]**(https://github.com/SamTheDemon), **[Abdulaziz Alhussein]**(https://github.com/AbdulazizSE).
 
 
 ## HOW TO RUN: 
